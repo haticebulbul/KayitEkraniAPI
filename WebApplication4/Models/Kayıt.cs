@@ -12,7 +12,9 @@ namespace WebApplication4.Models
         public string gender { get; set; }
         public string mail { get; set; }
         public DateTime date { get; set; }
-        
+
+        public int  JobID { get; set; }
+        public string Jobname { get; set; }
 
     }
 }

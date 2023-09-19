@@ -29,7 +29,7 @@ namespace WebApplication4.Controllers
 
         public string Kayıt(Kayıt kayıt)
         {
-            kayıt.date = kayıt.date.ToLocalTime();
+            kayıt.date = kayıt.date.ToLocalTime(); //saat eşitlemesi için.
            
             //string dbConnectionString = _configuration.GetValue<string>("ConnectionStrings: Kay�tDbConnection");
             string dbConnectionString = _configuration.GetConnectionString("KayitDbConnection");
@@ -107,7 +107,7 @@ namespace WebApplication4.Controllers
 
             string dbConnectionString = _configuration.GetConnectionString("KayitDbConnection");
             SqlConnection con = new SqlConnection(dbConnectionString);
-            SqlCommand cmd = new SqlCommand("SELECT * FROM TblKisiler", con);
+            SqlCommand cmd = new SqlCommand("select k.ID,k.name,k.surname,k.gender,k.mail,k.date,j.ID as jobID,j.name as jobName from TblKisiler k left join TblJobs j on k.jobID = j.ID", con);
             con.Open();
             SqlDataReader reader = cmd.ExecuteReader();
             List<Kayıt> kayıtlar = new List<Kayıt>();
@@ -120,7 +120,9 @@ namespace WebApplication4.Controllers
                 kayıt.gender = reader["gender"].ToString();
                 kayıt.mail = reader["mail"].ToString();
                 kayıt.date = ((DateTime)reader["date"]).Date;
-              
+                kayıt.JobID= (int)reader["jobID"];
+                kayıt.Jobname = reader["jobName"].ToString();
+
                 kayıtlar.Add(kayıt);
             }
             con.Close();
