@@ -31,11 +31,10 @@ namespace WebApplication4.Controllers
         {
             kayıt.date = kayıt.date.ToLocalTime(); //saat eşitlemesi için.
            
-            //string dbConnectionString = _configuration.GetValue<string>("ConnectionStrings: Kay�tDbConnection");
+            
             string dbConnectionString = _configuration.GetConnectionString("KayitDbConnection");
             SqlConnection con = new SqlConnection(dbConnectionString);
-
-            SqlCommand cmd = new SqlCommand("INSERT INTO TblKisiler(name, surname, gender, mail, date) VALUES (@name, @surname, @gender, @mail, @date)", con);
+            SqlCommand cmd = new SqlCommand("INSERT INTO TblKisiler (name, surname, gender, mail, date, jobID) VALUES (@name, @surname, @gender, @mail, @date, @jobID)", con);
 
 
             cmd.Parameters.AddWithValue("@name", kayıt.name);
@@ -43,10 +42,10 @@ namespace WebApplication4.Controllers
             cmd.Parameters.AddWithValue("@gender", kayıt.gender);
             cmd.Parameters.AddWithValue("@mail", kayıt.mail);
             cmd.Parameters.AddWithValue("@date", kayıt.date);
+            cmd.Parameters.AddWithValue("@jobID", kayıt.JobID);
+           
 
-            
-            //cmd.ExecuteNonQuery();
-            //SqlCommand cmd = new SqlCommand("INSERT INTO TblKisiler(name,surname,gender,mail,date)VALUES('"   + kayıt.name + "','" + kayıt.surname + "','" + kayıt.gender + "','" + kayıt.mail + "','" + kayıt.date + "')", con);            
+                       
             con.Open();
             int i = cmd.ExecuteNonQuery();
             con.Close();
@@ -107,7 +106,8 @@ namespace WebApplication4.Controllers
 
             string dbConnectionString = _configuration.GetConnectionString("KayitDbConnection");
             SqlConnection con = new SqlConnection(dbConnectionString);
-            SqlCommand cmd = new SqlCommand("select k.ID,k.name,k.surname,k.gender,k.mail,k.date,j.ID as jobID,j.name as jobName from TblKisiler k left join TblJobs j on k.jobID = j.ID", con);
+            //SqlCommand cmd = new SqlCommand("SELECT  k.ID,k.name,k.surname,k.gender,k.mail,k.date from TblKisiler k left join TblJobs j on k.ID = j.ID", con);
+            SqlCommand cmd = new SqlCommand("select k.ID,k.name,k.surname,k.gender,k.mail,k.date,j.jobID as jobID,j.jobname as jobName from TblKisiler k left join TblJobs j on k.jobID = j.jobID", con);
             con.Open();
             SqlDataReader reader = cmd.ExecuteReader();
             List<Kayıt> kayıtlar = new List<Kayıt>();
