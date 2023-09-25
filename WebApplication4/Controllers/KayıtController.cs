@@ -34,8 +34,8 @@ namespace WebApplication4.Controllers
             
             string dbConnectionString = _configuration.GetConnectionString("KayitDbConnection");
             SqlConnection con = new SqlConnection(dbConnectionString);
-            SqlCommand cmd = new SqlCommand("INSERT INTO TblKisiler (name, surname, gender, mail, date, jobID) VALUES (@name, @surname, @gender, @mail, @date, @jobID)", con);
-
+            SqlCommand cmd = new SqlCommand("KisilerEkle", con);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@name", kayıt.name);
             cmd.Parameters.AddWithValue("@surname", kayıt.surname);
@@ -48,6 +48,7 @@ namespace WebApplication4.Controllers
                        
             con.Open();
             int i = cmd.ExecuteNonQuery();
+         
             con.Close();
             if (i > 0)
             {
@@ -70,9 +71,10 @@ namespace WebApplication4.Controllers
                 con.Open();
 
              
-                string sqlQuery = "DELETE FROM TblKisiler WHERE ID = @ID";
+                string sqlQuery = "KisilerSil";
                 using (SqlCommand cmd = new SqlCommand(sqlQuery, con))
                 {
+                    cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@ID", id);
 
                     int rowsAffected = cmd.ExecuteNonQuery();
@@ -107,7 +109,7 @@ namespace WebApplication4.Controllers
             string dbConnectionString = _configuration.GetConnectionString("KayitDbConnection");
             SqlConnection con = new SqlConnection(dbConnectionString);
             //SqlCommand cmd = new SqlCommand("SELECT  k.ID,k.name,k.surname,k.gender,k.mail,k.date from TblKisiler k left join TblJobs j on k.ID = j.ID", con);
-            SqlCommand cmd = new SqlCommand("select k.ID,k.name,k.surname,k.gender,k.mail,k.date,j.jobID as jobID,j.jobname as jobName from TblKisiler k left join TblJobs j on k.jobID = j.jobID", con);
+            SqlCommand cmd = new SqlCommand("KisilerListele", con);
             con.Open();
             SqlDataReader reader = cmd.ExecuteReader();
             List<Kayıt> kayıtlar = new List<Kayıt>();
@@ -121,6 +123,7 @@ namespace WebApplication4.Controllers
                 kayıt.mail = reader["mail"].ToString();
                 kayıt.date = ((DateTime)reader["date"]).Date;
                 kayıt.JobID= (int)reader["jobID"];
+              
                 kayıt.Jobname = reader["jobName"].ToString();
 
                 kayıtlar.Add(kayıt);
